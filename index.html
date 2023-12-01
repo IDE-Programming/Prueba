@@ -1,0 +1,124 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Call App</title>
+  <style>
+    video {
+      width: 100%;
+      max-width: 400px;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Video Call App</h1>
+  <button id="joinButton">Join Call</button>
+  <video id="localVideo" autoplay muted></video>
+  <video id="remoteVideo" autoplay></video>
+
+</body>
+</html>
+
+
+
+
+<script type="module" >
+
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import { getFirestore, collection, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC0ObLKlhJFM24tyWimAy--Qxsj1J_WcJg",
+  authDomain: "calculor.firebaseapp.com",
+  databaseURL: "https://calculor.firebaseio.com",
+  projectId: "calculor",
+  storageBucket: "calculor.appspot.com",
+  messagingSenderId: "34677562689",
+  appId: "1:34677562689:web:0d60aca4d1d54c459055c0",
+  measurementId: "G-P95Q7HX3JT"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+const firestore = getFirestore(app);
+const joinButton = document.getElementById('joinButton');
+const localVideo = document.getElementById('localVideo');
+const remoteVideo = document.getElementById('remoteVideo');
+
+let localStream;
+let remoteStream;
+let pc;
+
+const startVideoCall = async () => {
+  localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+  localVideo.srcObject = localStream;
+
+  const callDoc = doc(collection(firestore, 'calls'));
+  const offerCandidates = collection(callDoc, 'offerCandidates');
+  const answerCandidates = collection(callDoc, 'answerCandidates');
+
+  pc = new RTCPeerConnection();
+
+  // Add local stream to peer connection
+  localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+  // Listen for ice candidate events and send to the other peer
+  pc.onicecandidate = event => {
+    event.candidate && offerCandidates.add(event.candidate.toJSON());
+  };
+
+  // Create offer
+  const offerDescription = await pc.createOffer();
+  await pc.setLocalDescription(offerDescription);
+
+  const offer = {
+    sdp: offerDescription.sdp,
+    type: offerDescription.type,
+  };
+
+  await setDoc(callDoc, { offer });
+
+  // Listen for remote answer
+  onSnapshot(callDoc, (snapshot) => {
+    const data = snapshot.data();
+    if (data?.answer) {
+      const answerDescription = new RTCSessionDescription(data.answer);
+      pc.setRemoteDescription(answerDescription);
+    }
+  });
+
+  // Add remote ice candidates from the other peer
+  onSnapshot(answerCandidates, snapshot => {
+    snapshot.docChanges().forEach(change => {
+      if (change.type === 'added') {
+        const candidate = new RTCIceCandidate(change.doc.data());
+        pc.addIceCandidate(candidate);
+      }
+    });
+  });
+
+  // Listen for remote tracks and add to the video element
+  pc.ontrack = (event) => {
+    event.streams[0].getTracks().forEach(track => {
+      remoteStream.addTrack(track);
+    });
+  };
+
+  joinButton.disabled = true;
+};
+
+joinButton.addEventListener('click', () => {
+  startVideoCall();
+});
+
+</script>
+
+
+
+
