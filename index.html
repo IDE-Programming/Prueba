@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebRTC Video Call - Initiator</title>
+  <style>
+    #localVideo, #remoteVideo {
+      width: 100%;
+      max-width: 300px;
+    }
+  </style>
+</head>
+<body>
+  <h1>WebRTC Video Call - Initiator</h1>
+  <video id="localVideo" autoplay playsinline></video>
+  <video id="remoteVideo" autoplay playsinline></video>
+
+  <script>
+    const localVideo = document.getElementById('localVideo');
+    const remoteVideo = document.getElementById('remoteVideo');
+    let localStream;
+
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then(stream => {
+        localVideo.srcObject = stream;
+        localStream = stream;
+      })
+      .catch(error => console.error('Error accessing media devices:', error));
+
+    document.getElementById('startButton').addEventListener('click', startCall);
+
+    function startCall() {
+      // Implementar la lógica de señalización y conexión WebRTC aquí
+    }
+  </script>
+</body>
+</html>
