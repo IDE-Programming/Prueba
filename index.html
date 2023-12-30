@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mueble en AR con Flechas</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+  <link rel="stylesheet" href="Prueba.css">
+</head>
+<body>
+
+<div id="arContainer">
+  <a-scene
+    vr-mode-ui="enabled: false"
+    debug="true"
+    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+  >
+
+
+    <a-entity
+      id="modelEntity"
+      obj-model="obj: https://ide-programming.github.io/Prueba/TV%20Furniture.obj; mtl: https://ide-programming.github.io/Prueba/TV%20Furniture.mtl"
+      scale="0.1 0.1 0.1"
+      rotation="0 180 0"
+      position="0 1.5 -5"
+
+    ></a-entity>
+
+  </a-scene>
+</div>
+
+<div id="buttonContainer">
+  <div class="button" onclick="moveModel('forward')">▲</div>
+  <div class="button" onclick="moveModel('backward')">▼</div>
+  <div class="button" onclick="moveModel('left')">◀</div>
+  <div class="button" onclick="moveModel('right')">▶</div>
+  <div class="button" onclick="rotateModel('left')">↺</div>
+  <div class="button" onclick="rotateModel('right')">↻</div>
+  <div class="button" onclick="moveContainer('up')">⬆</div>
+  <div class="button" onclick="moveContainer('down')">⬇</div>
+</div>
+
+<script>
+  function moveModel(direction) {
+    const modelEntity = document.getElementById('modelEntity');
+    const currentPosition = modelEntity.getAttribute('position');
+    const step = 1.5;
+
+    switch (direction) {
+      case 'forward':
+        modelEntity.setAttribute('position', `${currentPosition.x} ${currentPosition.y} ${currentPosition.z - step}`);
+        break;
+      case 'backward':
+        modelEntity.setAttribute('position', `${currentPosition.x} ${currentPosition.y} ${currentPosition.z + step}`);
+        break;
+      case 'right':
+        modelEntity.setAttribute('position', `${currentPosition.x + step} ${currentPosition.y} ${currentPosition.z}`);
+        break;
+      case 'left':
+        modelEntity.setAttribute('position', `${currentPosition.x - step} ${currentPosition.y} ${currentPosition.z}`);
+        break;
+      default:
+        break;
+    }
+  }
+
+  function rotateModel(direction) {
+    const modelEntity = document.getElementById('modelEntity');
+    const currentRotation = modelEntity.getAttribute('rotation');
+    const rotationStep = 5;
+
+    switch (direction) {
+      case 'left':
+        modelEntity.setAttribute('rotation', `${currentRotation.x} ${currentRotation.y - rotationStep} ${currentRotation.z}`);
+        break;
+      case 'right':
+        modelEntity.setAttribute('rotation', `${currentRotation.x} ${currentRotation.y + rotationStep} ${currentRotation.z}`);
+        break;
+      default:
+        break;
+    }
+  }
+
+
+  
+  function moveContainer(direction) {
+    const modelEntity = document.getElementById('modelEntity');
+    const currentPosition = modelEntity.getAttribute('position');
+    const step = 1.5;
+
+    switch (direction) {
+      case 'up':
+        modelEntity.setAttribute('position', `${currentPosition.x} ${currentPosition.y + step} ${currentPosition.z}`);
+        break;
+      case 'down':
+        modelEntity.setAttribute('position', `${currentPosition.x} ${currentPosition.y - step} ${currentPosition.z}`);
+        break;
+    
+      default:
+        break;
+    }
+  }
+
+
+
+  document.addEventListener('fullscreenchange', handleFullscreenChange);
+
+  function handleFullscreenChange() {
+    const canvasElement = document.querySelector('.a-canvas.a-grab-cursor');
+
+    canvasElement.style.width = '80%';
+  }
+</script>
+
+</body>
+</html>
