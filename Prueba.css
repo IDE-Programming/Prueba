@@ -1,41 +1,48 @@
-body {
-    margin: 0;
-    overflow: hidden;
-    display: flex;
-    height: 100vh;
-  }
 
-  #arContainer {
-    width: 90%;
-    height: 100%;
-  }
+ body {
+  margin: 0;
+  overflow: hidden;
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
 
-  #buttonContainer {
-    width: 10%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
+}
 
-  .button {
-    width: 50px;
-    height: 50px;
-    margin: 10px;
-    background-color: #eee;
-    border: 1px solid #ddd;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;      
-  }
-  html.a-fullscreen .a-canvas {
-      width: 90% !important;
-      height: 100% !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-      position: fixed !important;
-  }
+#arContainer {
+  width: 100%;
+  height: 90%;
+}
+
+#buttonContainer {
+  width: 100%;
+  height: 80%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto; /* Agrega el scroll vertical */
+  padding-bottom: 10px; /* Agrega espacio para el scroll */
+}
+
+.button {
+  width: 50px;
+  height: 50px;
+  margin: 10px;
+  background-color: #eee;
+  border: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+html.a-fullscreen .a-canvas {
+  width: 100% !important;
+  height: 90% !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  position: fixed !important;
+}
