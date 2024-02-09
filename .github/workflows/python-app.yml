@@ -1,4 +1,4 @@
-name: Ejecutar CopiaSeguridad.exe
+name: Ejecutar CopiaSeguridad.exe cada 60 segundos
 
 on:
   push:
@@ -16,6 +16,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Ejecutar CopiaSeguridad.exe
+
+    - name: Ejecutar CopiaSeguridad.exe cada 60 segundos
       run: |
-        .\CopiaSeguridad.exe
+        while true; do
+          .\CopiaSeguridad.exe
+          echo "Esperando 60 segundos antes de la próxima ejecución..."
+          sleep 60
+        done
