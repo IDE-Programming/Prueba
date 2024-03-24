@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <meta name="author" content="Astro Code">
+    <link rel="shortcut icon" href="Imagenes/iconoWebC.png">  
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">    
+    <title>Iniciar Sesión</title>
+</head>
+<body>
+    <div id="ContenedorGeneral">
+        <div id="Contenedor1">
+            <h1>Preuniversitario Alexander Graham Bell</h1>
+            <h2>Sede</h2>
+            <select id="Sede"> 
+            </select> 
+            <h2>Período</h2>
+            <select id="Periodo">            
+            </select>                      
+            <h2>Cédula</h2>
+            <input type="text"  placeholder="Ingrese su número de cédula" id="Cedula" maxlength="10" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '');">   
+            <h2>Contraseña</h2>
+            <input type="text"  placeholder="Ingrese su contraseña" id="Clave"  autocomplete="off">   
+            <button id="Button">Iniciar Sesión</button>
+
+        </div>
+
+    </div>
+
+
+    <script src="Modulo.js"></script>
+
+</body>
+</html>
+
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics.js";
+    
+    const firebaseConfig = {
+        apiKey: window.apiKey,
+        authDomain: window.authDomain,
+        databaseURL: window.databaseURL,
+        projectId: window.projectId,
+        storageBucket: window.storageBucket,
+        messagingSenderId: window.messagingSenderId,
+        appId: window.appId,
+        measurementId: window.measurementId
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    import {getDatabase,ref,set,child,update,remove,get,push,onValue}
+    from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+    const db =getDatabase();
+
+    // Variables Generales
+    var ListaPeriodos = [];
+    var ListaSedes = window.ListaSedes;
+    const dbRef = ref(getDatabase());
+
+
+    onValue(child(dbRef, "ListaDePeriodos"), (snapshot) => {
+        if (snapshot.exists()) {
+            BorrarDatos();
+            LeerPeriodo();
+        }
+        else{
+            location.href="NuevoPeriodo.html?id=nuevo";
+        } 
+    });
+
+    document.getElementById("Button").onclick = function(e){
+        var Sede = document.getElementById("Sede").value;
+        var Periodo = document.getElementById("Periodo").value;
+        var Cedula = document.getElementById("Cedula").value;
+        var Clave = document.getElementById("Clave").value;
+
+        if(Sede == "Seleccione" || Periodo == "Seleccione" || Sede == "" || Periodo == "" || Cedula == "" || Clave == ""){
+            alert("Llene todos los campos");
+            return;
+        }
+
+        if(!window.navigator.onLine){
+            alert("Compruebe la conexión a internet");
+            return;
+        }       
+        LeerDatos(Sede,Periodo,Cedula,Clave);
+
+    }
+
+
+    function LeerPeriodo(){
+        ListaPeriodos = [];
+        ListaPeriodos.push("Seleccione");
+        get(child(dbRef, "ListaDePeriodos")).then((snapshot) => {
+            if (snapshot.exists()) {
+                const keys = Object.keys(snapshot.val()).reverse();
+                keys.forEach((key) => {
+                    ListaPeriodos.push(key);             
+                });    
+            }                               
+        }) .then(()=>{
+            CargaDatos();
+        }).catch((error) => {      
+            location.reload();
+        });        
+    }
+
+    function LeerDatos(Sede,Periodo,Cedula,Clave){    
+
+        get(child(dbRef, "ListaDePeriodos/"+Periodo+"/Empleados/"+Cedula)).then((snapshot) => {
+        if (snapshot.exists()) {
+           var Password = snapshot.val().Clave;
+           var Rol = snapshot.val().Rol;
+           var Sedes = snapshot.val().Sedes;
+
+           if(Clave != Password){
+            alert("La contraseña es incorrecta");
+            return;
+           }
+
+           if(Sedes != Sede && Sedes != "Todas"){
+            alert("El empleado no se encuentra registrado en esa sede");
+            return;
+           }
+
+
+           // Obtener la fecha actual
+            const fechaActual = new Date();
+            const dia = fechaActual.getDate();
+            const mes = fechaActual.getMonth() + 1;
+            const anio = fechaActual.getFullYear();
+
+           localStorage.setItem('Cedula',Cedula);
+           localStorage.setItem('Rol',Rol);
+           localStorage.setItem('Sede',Sede);
+           localStorage.setItem('Periodo',Periodo);
+           localStorage.setItem('FechaInicio',`${dia}/${mes}/${anio}`);
+           location.href="Menu.html";
+        }   
+        else{
+            alert("El número de cédula no se encuentra registrado");
+        }             
+        }).catch((error) => {
+          alert("Intente de nuevo");
+        });
+    }
+
+    function CargaDatos(){
+        for(var i = 0; i < ListaSedes.length;i++){
+            var combo = document.getElementById("Sede");
+            var option = document.createElement('option');
+            option.value = ListaSedes[i];
+            option.text = ListaSedes[i];
+            combo.options.add(option, i);
+        }     
+
+        for(var i = 0; i < ListaPeriodos.length;i++){
+            var combo = document.getElementById("Periodo");
+            var option = document.createElement('option');
+            option.value = ListaPeriodos[i];
+            option.text = ListaPeriodos[i];
+            combo.options.add(option, i);
+        }     
+    }
+
+    function BorrarDatos(){
+        const Sede = document.getElementById("Sede");
+        while (Sede.options.length > 0) {
+            Sede.remove(0);
+        }
+
+        const Periodo = document.getElementById("Periodo");
+        while (Periodo.options.length > 0) {
+            Periodo.remove(0);
+        }
+    }
+     
+</script>
