@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="MenuOpciones.css">
+    <meta name="author" content="Astro Code">
+    <link rel="shortcut icon" href="Imagenes/iconoWebC.png">  
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">    
+    <title>Menú Reportes</title>
+</head>
+<body>
+    <div id="ContenedorGeneral">
+        <div id="Contenedor1">
+            <button id="Regresar" onclick="location.href = 'Menu.html'"> &#60;</button>
+
+            <h1 style="color: #06176f; border-bottom: 2px solid #06176f;">Reportes</h1>
+
+            <div id="Opciones">
+                <div class="Opciones">
+                    <img src="Imagenes/img15.png">
+                    <h2>Flujo de<br>Caja</h2>    
+                </div>                   
+
+                <div class="Opciones">
+                    <img src="Imagenes/img18.png">
+                    <h2>Pagos<br>Pendientes</h2>    
+                </div>                                                                                                       
+
+                <div class="Opciones">
+                    <img src="Imagenes/img16.png">
+                    <h2>Informe de Ventas<br>Mensuales</h2>    
+                </div>                   
+
+                <div class="Opciones">
+                    <img src="Imagenes/img14.png">
+                    <h2>Informe de<br>Cursos</h2>    
+                </div>  
+
+                <div class="Opciones">
+                    <img src="Imagenes/img12.png">
+                    <h2>Informe de las<br>Unidades Educativas</h2>    
+                </div>  
+                
+                <div class="Opciones">
+                    <img src="Imagenes/img17.png">
+                    <h2>Informe del<br>Período</h2>    
+                </div>
+            
+            </div>
+        
+        </div>
+        <div id="Contenedor2">
+            <div id="Notas">
+                <div id="Notas1">
+                    <h1>Notas</h1>
+                </div>
+                <div id="Notas2">
+                    <button id="ButtonNotas">+</button>
+                </div>
+            </div>
+            
+            <textarea id="TextoNotas" placeholder="Ingrese un texto"></textarea>     
+            
+            <div id="BlogNotas"></div>
+
+       
+        </div>
+    </div>
+
+    <script src="Modulo.js"></script>
+
+</body>
+</html>
+
+<script type="module">
+    
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics.js";
+    
+    const firebaseConfig = {
+        apiKey: window.apiKey,
+        authDomain: window.authDomain,
+        databaseURL: window.databaseURL,
+        projectId: window.projectId,
+        storageBucket: window.storageBucket,
+        messagingSenderId: window.messagingSenderId,
+        appId: window.appId,
+        measurementId: window.measurementId
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    import {getDatabase,ref,set,child,update,remove,get,push,onValue}
+    from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+    const db =getDatabase();
+    const dbRef = ref(getDatabase());
+
+
+    // VARIABLES GENERALES
+    var Cedula = localStorage.getItem('Cedula');
+    var Rol = localStorage.getItem('Rol');
+    var Sede = localStorage.getItem('Sede');
+    var Periodo = localStorage.getItem('Periodo');
+    var FechaInicio = localStorage.getItem('FechaInicio');
+    
+    // Obtener la fecha actual
+    const fechaActual = new Date();
+    const dia = fechaActual.getDate();
+    const mes = fechaActual.getMonth() + 1;
+    const anio = fechaActual.getFullYear();
+    var Fecha = `${dia}/${mes}/${anio}`;
+
+    if(Cedula == null){
+        alert("El tiempo expiro, inicie sesión nuevamente");
+        location.href="index.html";
+    }
+
+    if(Fecha != FechaInicio){
+        alert("El tiempo expiro, inicie sesión nuevamente");
+        location.href="index.html";
+    }
+
+    let inactividadTimer;
+    function iniciarInactividad() {
+        if (inactividadTimer) {
+            clearTimeout(inactividadTimer);
+        }
+        inactividadTimer = setTimeout(function() {
+            BaseDeDatos();
+            
+        }, 5 * 60 * 1000); // 5 minutos en milisegundos
+    }
+    function reiniciarInactividad() {
+        iniciarInactividad();
+    }
+    document.addEventListener("mousemove", reiniciarInactividad);
+    document.addEventListener("keypress", reiniciarInactividad);
+    document.addEventListener("touchstart", reiniciarInactividad); // Para dispositivos táctiles
+    iniciarInactividad();
+    function BaseDeDatos(){            
+            get(dbRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                var Datos = snapshot.val();   
+                localStorage.setItem('CopiasDeSeguridad',JSON.stringify(Datos));
+                location.href="CopiaDeSeguridad.html";
+            }
+        
+        }).catch((error) => {
+            BaseDeDatos();
+        });
+    }
+    
+
+
+    // Crear Notas
+    document.getElementById("ButtonNotas").onclick = function(e){
+        var Nota = document.getElementById("TextoNotas").value;
+        if(Nota == ""){
+            alert("Ingrese una texto");
+            return;
+        }
+
+        if(!window.navigator.onLine){
+            alert("Compruebe la conexión a internet");
+            return;
+        } 
+
+
+        var NotasRef = ref(db, Periodo+"/"+Sede+"/BlogNotas/");                        
+        // Añadir un nuevo elemento utilizando push
+        const nuevoPushRef = push(NotasRef, {
+                        Texto: Nota,
+                        Fecha:Fecha
+                    });
+
+        // Obtener el nombre del push generado
+        const nuevoPushKey = nuevoPushRef.key;
+
+        nuevoPushRef.then(() => {
+            document.getElementById("TextoNotas").value = "";
+        })
+        .catch((error) => {
+            remove(ref(db,Periodo+"/"+Sede+"/BlogNotas/"+nuevoPushKey));                  
+            alert("Intente de nuevo");
+        });
+
+        
+    }
+
+    onValue(child(dbRef, Periodo+"/"+Sede+"/BlogNotas"), (snapshot) => {
+        if (snapshot.exists()) {
+            var div = document.getElementById("BlogNotas");
+            // Eliminar todos los elementos hijos del div
+            while (div.firstChild) {
+            div.removeChild(div.firstChild);
+            }            
+            LeerBlogNotas();
+        }
+        else{
+            var div = document.getElementById("BlogNotas");
+            // Eliminar todos los elementos hijos del div
+            while (div.firstChild) {
+                div.removeChild(div.firstChild);
+            } 
+        }    
+    });
+    
+    function LeerBlogNotas(){
+        get(child(dbRef, Periodo+"/"+Sede+"/BlogNotas")).then((snapshot) => {
+            if (snapshot.exists()) {
+                const keys = Object.keys(snapshot.val()).reverse();
+                keys.forEach((key) => {
+                    const hijo = snapshot.val()[key];
+                    var FechaCreacion = hijo.Fecha;
+                    var Texto = hijo.Texto;
+                    CrearNotas(key,Texto,FechaCreacion);
+                });    
+            }                               
+        }).catch((error) => {      
+            location.reload();
+        });        
+    }
+
+    function CrearNotas(Id,Texto,FechaCreacion){
+        var LeerDiv = document.getElementById("BlogNotas");
+        var newBloque = document.createElement("div"); 
+        newBloque.className = "notas";
+        newBloque.onclick = (function() { EliminarNota(Id); });    
+        var newH4 = document.createElement("h4");
+        newH4.innerText = FechaCreacion;
+        var newP = document.createElement("p");
+        newP.innerText = Texto;       
+        newBloque.appendChild(newH4); 
+        newBloque.appendChild(newP); 
+        LeerDiv.appendChild(newBloque);     
+    }
+
+    function EliminarNota(Id){
+        if (confirm("¿Estás seguro de eliminar la nota?")) {
+            remove(ref(db,Periodo+"/"+Sede+"/BlogNotas/"+Id));                  
+        } 
+    }
+</script>

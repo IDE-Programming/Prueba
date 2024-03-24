@@ -1,0 +1,219 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+html,body{
+    width: 100%;
+    height: 100%;  
+    font-family: "Roboto", sans-serif;
+    background-color: #182244; 
+}
+
+
+h1{
+    font-size: 40px;
+    margin-bottom: 30px;
+    margin-top: 40px;
+    text-align: center;
+}
+  
+h2{
+    font-size: 20px;
+}
+h3{
+    text-align: center;
+    font-size: 18px;
+}
+p{
+    margin-top: 2px;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+  
+input{
+    width: 96%;
+    padding-bottom: 7px;
+    padding-left: 7px;
+    padding-top: 7px;
+    border-radius: 5px;
+    border-width: 1.5px;
+    margin-top: 4px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    box-sizing: border-box;
+  }
+
+
+  select{
+    width: 100%;
+    padding-bottom: 7px;
+    padding-left: 7px;
+    padding-top: 7px;
+    border-radius: 5px;
+    border-width: 1.5px;
+    margin-top: 4px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    box-sizing: border-box;
+  }
+
+  button{
+    width: 96%;
+    height: 40px;
+    border-radius: 5px;
+    color: white;
+    background-color: black;
+    margin-top: 10px;
+    font-size: 17px;
+    margin-bottom: 40px;
+    cursor: pointer;
+  }
+
+
+  #loading{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: none;
+  }
+  img{
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-repeat: no-repeat;
+  }
+
+  #Regresar{
+    width: 100px;
+    margin-top: 20px;
+    background-color: #06176f;
+    color: white;
+    font-size: 35px;
+    margin-bottom: 0px;
+}
+
+#ContenedorLoading{
+    height: 100%;
+    width: 100%;
+    /* display: none; */
+}
+#ContenedorGeneral{
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+#Contenedor1{
+    flex: 2;
+    padding-left: 40px;
+    background-color: white;
+    min-height: 500px;
+}
+#Contenedor2{
+    flex: 1;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+
+.Separacion{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.Separacion div{
+    flex: 1;    
+    min-width: 150px;
+    height: fit-content;
+    margin-right: 4%;
+    text-align: center;
+    border-radius: 5px;
+    border: 1.5px solid;
+    padding: 10px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    box-sizing: border-box;
+
+}
+
+.Separacion img{
+    max-width: 70px;
+    height: 80%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin-bottom: 5px;
+}
+
+.Separacion div:hover{
+    background-color: #9bbce2;
+}
+#SinContrato{
+    background-color: #9be2c4;
+}
+
+#ButtonModificar{
+    margin-bottom: 10px;
+    display: none;
+}
+#ButtonEliminar{
+    display: none;
+}
+
+.PerfilesCreados{
+    background-color: white;
+    border-radius: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 20px;
+    cursor: pointer;
+}
+
+.PerfilesCreados P{
+    margin-bottom: 0px;
+    margin-top: 10px;
+}
+
+
+
+
+
+   
+@media screen  and (max-height:650px){
+    #ContenedorGeneral{
+        height: auto;
+    }
+}  
+
+@media screen  and (max-width:1000px){
+    #ContenedorGeneral{ 
+        display: inline-block;
+    }
+    #Contenedor2{
+        height: auto;
+    }
+}    
+
+@media screen  and (max-width:600px){
+    #Contenedor1{
+        padding-left: 20px;
+        padding-right: 20px;
+    }   
+
+    input{
+        width: 100%;       
+      }
+
+    .Separacion div{
+        min-width: 100%;
+    }
+   
+    h1{
+        font-size: 35px;
+    }
+    button{
+        width: 100%;     
+      }
+}    
+

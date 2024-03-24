@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="NuevoPeriodo.css">
+    <meta name="author" content="Astro Code">
+    <link rel="shortcut icon" href="Imagenes/iconoWebC.png">  
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">    
+    <title>Crear Nuevo Período</title>
+</head>
+<body>
+
+    <div id="loading">
+        <img src="Imagenes/loading.gif">
+    </div>
+
+
+    <div id="ContenedorGeneral">
+        <div id="Contenedor1">
+            <h1>Crear Nuevo Período</h1>                
+            <h2>Nombre del Período</h2>
+            <input type="text" id="Nombre"  placeholder="Ejem: 2024-2025" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9-]/g, '');">             
+            <button id="CrearPeriodo">Crear nuevo período</button>
+            <button id="Regreso" onclick="location.href = 'MenuConfiguracion.html'" style="margin-bottom: 15px;">Regresar al menú</button>
+        </div>
+    </div>
+
+    <script src="Modulo.js"></script>
+</body>
+</html>
+
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics.js";
+    
+    const firebaseConfig = {
+        apiKey: window.apiKey,
+        authDomain: window.authDomain,
+        databaseURL: window.databaseURL,
+        projectId: window.projectId,
+        storageBucket: window.storageBucket,
+        messagingSenderId: window.messagingSenderId,
+        appId: window.appId,
+        measurementId: window.measurementId
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    import {getDatabase,ref,set,child,update,remove,get,push,onValue}
+    from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+    const db =getDatabase();
+    const dbRef = ref(getDatabase());
+
+
+    var BuscarParametro = window.location.search;
+    var ParametroUrl = new URLSearchParams(BuscarParametro);
+    var Id = ParametroUrl.get('id');
+
+
+    if(Id != null){
+        document.getElementById("Regreso").style.display = "none";
+    }
+
+
+
+    // VARIABLES GENERALES
+    var Cedula = localStorage.getItem('Cedula');
+    var Rol = localStorage.getItem('Rol');
+    var Sede = localStorage.getItem('Sede');
+    var Periodo = localStorage.getItem('Periodo');
+    var FechaInicio = localStorage.getItem('FechaInicio');
+    
+    // Obtener la fecha actual
+    const fechaActual = new Date();
+    const dia = fechaActual.getDate();
+    const mes = fechaActual.getMonth() + 1;
+    const anio = fechaActual.getFullYear();
+    var Fecha = `${dia}/${mes}/${anio}`;
+
+    if(Cedula == null && Id == null){
+        alert("El tiempo expiro, inicie sesión nuevamente");
+        location.href="index.html";
+    }
+
+    if(Fecha != FechaInicio && Id == null){
+        alert("El tiempo expiro, inicie sesión nuevamente");
+        location.href="index.html";
+    }
+
+    let inactividadTimer;
+    function iniciarInactividad() {
+        if (inactividadTimer) {
+            clearTimeout(inactividadTimer);
+        }
+        inactividadTimer = setTimeout(function() {
+            BaseDeDatos();
+            
+        }, 5 * 60 * 1000); // 5 minutos en milisegundos
+    }
+    function reiniciarInactividad() {
+        iniciarInactividad();
+    }
+    document.addEventListener("mousemove", reiniciarInactividad);
+    document.addEventListener("keypress", reiniciarInactividad);
+    document.addEventListener("touchstart", reiniciarInactividad); // Para dispositivos táctiles
+    iniciarInactividad();
+    function BaseDeDatos(){            
+            get(dbRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                var Datos = snapshot.val();   
+                localStorage.setItem('CopiasDeSeguridad',JSON.stringify(Datos));
+                location.href="CopiaDeSeguridad.html";
+            }
+        
+        }).catch((error) => {
+            BaseDeDatos();
+        });
+    }
+    
+
+
+    // PROGRAMACION DEL BLOQUE
+    document.getElementById("CrearPeriodo").onclick = function(e){
+        var Nombre = document.getElementById("Nombre").value;
+        if(Nombre == ""){
+            alert("Ingrese el nombre el nuevo período");
+            return;
+        }
+
+        if(!window.navigator.onLine){
+            alert("Compruebe la conexión a internet");
+            return;
+        } 
+
+        document.getElementById("loading").style.display = "inline";
+        document.getElementById("ContenedorGeneral").style.display = "none";
+        Leer(Nombre);
+    }
+    
+    function Leer(Nombre){    
+        get(child(dbRef, "ListaDePeriodos/"+Nombre)).then((snapshot) => {
+        if (snapshot.exists()) {
+            alert("El período con nombre "+Nombre+" ya se encuentra registrado");
+            return;
+        }
+        else{            
+            CrearPeriodo(Nombre);
+        }    
+        })
+        .catch((error) => {
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("ContenedorGeneral").style.display = "flex";
+            alert("Intente de nuevo");
+        });
+    }
+
+    function CrearPeriodo(Nombre){
+        update(ref(db,"ListaDePeriodos/"+Nombre),{
+            Empleados: {
+                1723883268:{
+                    Cedula: "1723883268", 
+                    Clave: "vp1o3d",
+                    Nombre: "Mateo Sebastian Espinosa Martinez",
+                    Rol: "Sistemas",
+                    Sedes: "Todas"                 
+                }
+            }
+        })
+        .then(()=>{
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("ContenedorGeneral").style.display = "flex";
+            alert("Periodo creado correctamente");
+            location.href="index.html";
+        })
+        .catch((error)=>{
+            remove(ref(db,"ListaDePeriodos/"+Nombre));     
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("ContenedorGeneral").style.display = "flex";             
+            alert("Intente de nuevo");
+        });
+    }
+ 
+</script>
+

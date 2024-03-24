@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="CopiaDeSeguridad.css" rel="stylesheet">
+    <link rel="icon" href="Imagenes/iconoWebC.png">
+    <meta name="author" content="Astro Code">
+    <title>Copia de Seguridad</title>
+</head>
+<body>
+
+    <div id="loading">
+        <img src="Imagenes/loading.gif">
+    </div>
+</body>
+<script src="Modulo.js"></script>
+
+</html>
+
+
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics.js";
+    
+    const firebaseConfig = {
+        apiKey: window.apiKey,
+        authDomain: window.authDomain,
+        databaseURL: window.databaseURL,
+        projectId: window.projectId,
+        storageBucket: window.storageBucket,
+        messagingSenderId: window.messagingSenderId,
+        appId: window.appId,
+        measurementId: window.measurementId
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    import {getDatabase,ref,set,child,update,remove,get,push,onValue}
+    from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+    const db =getDatabase();
+
+    CrearCopia();
+
+    function CrearCopia(){
+        var Copia = ref(db, "CopiasDeSeguridad");                        
+        // Añadir un nuevo elemento utilizando push
+        const nuevoPushRef = push(Copia, JSON.parse(localStorage.getItem('CopiasDeSeguridad')));
+
+        // Obtener el nombre del push generado
+        const nuevoPushKey = nuevoPushRef.key;
+
+        nuevoPushRef.then(() => {
+            // Remover los datos de localStorage después de usarlos
+            localStorage.removeItem('Cedula');
+            localStorage.removeItem('Rol');
+            localStorage.removeItem('Sede');
+            localStorage.removeItem('Periodo');
+            localStorage.removeItem('FechaInicio');
+            localStorage.removeItem('CopiasDeSeguridad');
+            location.href="index.html";
+        })
+        .catch((error) => {
+            remove(ref(db,"CopiasDeSeguridad/"+nuevoPushKey));                  
+            CrearCopia();
+        });
+    }
+
+
+    
+
+
+
+
+     
+</script>

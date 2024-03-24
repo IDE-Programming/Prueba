@@ -1,0 +1,114 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+html,body{
+    width: 100%;
+    height: 100%;  
+    font-family: "Roboto", sans-serif;
+    background-color: #182244; 
+}
+
+
+h1{
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+  
+h2{
+    font-size: 20px;
+}
+  
+input{
+    width: 99%;
+    padding-bottom: 7px;
+    padding-left: 7px;
+    padding-top: 7px;
+    border-radius: 5px;
+    border-width: 1.5px;
+    margin-top: 4px;
+    margin-bottom: 15px;
+    font-size: 15px;
+  }
+
+
+  select{
+    width: 100%;
+    padding: 7px;
+    border-radius: 5px;
+    border-width: 1.5px;
+    margin-top: 4px;
+    margin-bottom: 15px;
+    font-size: 15px;
+  }
+
+  button{
+    width: 100%;
+    padding-bottom: 7px;
+    padding-top: 7px;
+    border-radius: 5px;
+    border-width: 1.5px;
+    margin-top: 4px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    color: white;
+    background-color: black;
+  }
+  
+
+#ContenedorGeneral{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#Contenedor1{
+    width: 40%;
+    min-width: 1000px;
+    height: fit-content;
+    border-radius: 10px;
+    background-color: white;
+    padding: 20px;
+}
+
+@media screen  and (max-height:400px){
+    #ContenedorGeneral{
+        height: auto;
+    }
+}   
+
+@media screen  and (max-width:1200px){
+    h1{
+        font-size: 30px;
+    }
+      
+    h2{
+        font-size: 17px;
+    }
+    #Contenedor1{
+        min-width: 800px;       
+    }  
+
+}    
+
+@media screen  and (max-width:900px){
+    #Contenedor1{
+        min-width: 600px;       
+    }  
+}    
+@media screen  and (max-width:700px){
+    #Contenedor1{
+        width: 80%;
+        min-width: 0%;       
+    }  
+}    
+@media screen  and (max-width:600px){
+    #Contenedor1{
+        width: 100%;       
+    }
+    html,body{
+        background-color: white; 
+    }
+}    

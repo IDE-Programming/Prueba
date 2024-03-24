@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="RegistroEducativaCursos.css">
+    <meta name="author" content="Astro Code">
+    <link rel="shortcut icon" href="Imagenes/iconoWebC.png">  
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">    
+    <title>Registro de Unidades educativas y Cursos</title>
+</head>
+<body>
+    <div id="loading">
+        <img src="Imagenes/loading.gif">
+    </div>
+
+    <div id="ContenedorLoading">
+        <div id="ContenedorGeneral">      
+            <div id="Contenedor1">
+                <button id="Regresar" onclick="location.href = 'MenuConfiguracion.html'"> &#60;</button>
+                <h1>Registrar<br>Unidad Educativa</h1>
+                <input type="text"  placeholder="Ingrese el nombre de la unidad educativa" id="NombreUnidadEducativa" autocomplete="off" oninput="this.value = this.value.replace(/[^A-Z a-zñÑÁÉÍÓÚáéíóú]/g, '');">                             
+                <button id="ButtonUnidad">Crear nueva unidad educativa</button>
+
+    
+                <h1>Crear<br>Nuevo Curso</h1>
+                <input type="text"  placeholder="Ejm: SM01" id="NombreCurso" maxlength="4" autocomplete="off" oninput="this.value = this.value.replace(/[^sdemtSDEMT0-9]/g, '');">                             
+                <button id="ButtonCurso">Crear nuevo curso</button>
+            
+            
+            </div>  
+            <div id="Contenedor2">
+                <h1 style="text-align: center; color: white; margin-left: 10px; margin-right: 10px;" id="NombreLista">Lista de Unidades Educativas</h1>
+                <button id="MostrarCursos" class="MostrarLista">Ver cursos creados</button>
+                <button id="MostrarUnidadEducativa" class="MostrarLista">Ver unidades educativas creadas</button>
+
+                <div id="ListaUnidadesCreados">
+                </div>  
+                <div id="ListaCursosCreados">
+                </div>               
+            </div>  
+        </div>
+    </div>
+
+  
+
+    <script src="Modulo.js"></script>
+
+</body>
+</html>
+
+
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics.js";
+    
+    const firebaseConfig = {
+        apiKey: window.apiKey,
+        authDomain: window.authDomain,
+        databaseURL: window.databaseURL,
+        projectId: window.projectId,
+        storageBucket: window.storageBucket,
+        messagingSenderId: window.messagingSenderId,
+        appId: window.appId,
+        measurementId: window.measurementId
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    import {getDatabase,ref,set,child,update,remove,get,push,onValue}
+    from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+    const db =getDatabase();
+    const dbRef = ref(getDatabase());
+
+
+    // VARIABLES GENERALES
+    var Cedula = localStorage.getItem('Cedula');
+    var Rol = localStorage.getItem('Rol');
+    var Sede = localStorage.getItem('Sede');
+    var Periodo = localStorage.getItem('Periodo');
+    var FechaInicio = localStorage.getItem('FechaInicio');
+    
+    // Obtener la fecha actual
+    const fechaActual = new Date();
+    const dia = fechaActual.getDate();
+    const mes = fechaActual.getMonth() + 1;
+    const anio = fechaActual.getFullYear();
+    var Fecha = `${dia}/${mes}/${anio}`;
+
+    if(Cedula == null){
+        alert("El tiempo expiro, inicie sesión nuevamente");
+        location.href="index.html";
+    }
+
+    if(Fecha != FechaInicio){
+        alert("El tiempo expiro, inicie sesión nuevamente");
+        location.href="index.html";
+    }
+
+    let inactividadTimer;
+    function iniciarInactividad() {
+        if (inactividadTimer) {
+            clearTimeout(inactividadTimer);
+        }
+        inactividadTimer = setTimeout(function() {
+            BaseDeDatos();
+            
+        }, 5 * 60 * 1000); // 5 minutos en milisegundos
+    }
+    function reiniciarInactividad() {
+        iniciarInactividad();
+    }
+    document.addEventListener("mousemove", reiniciarInactividad);
+    document.addEventListener("keypress", reiniciarInactividad);
+    document.addEventListener("touchstart", reiniciarInactividad); // Para dispositivos táctiles
+    iniciarInactividad();
+    function BaseDeDatos(){            
+            get(dbRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                var Datos = snapshot.val();   
+                localStorage.setItem('CopiasDeSeguridad',JSON.stringify(Datos));
+                location.href="CopiaDeSeguridad.html";
+            }
+        
+        }).catch((error) => {
+            BaseDeDatos();
+        });
+    }
+    
+
+
+
+    // PROGRAMACION DEL BLOQUE
+
+    var ListaUnidades = [];
+    var ListaCursos = [];
+
+
+    document.getElementById("ButtonUnidad").onclick = function(e){
+        var Nombre = document.getElementById("NombreUnidadEducativa").value;
+        if(Nombre == ""){
+            alert("Ingrese el nombre de la unidad educativa");
+            return;
+        }
+
+        if(ListaUnidades.includes(Nombre.toLowerCase().replace(/\s/g, ''))){
+            alert("La unidad educativa ya se encuentra registrada");
+            return;  
+        }
+        if(!window.navigator.onLine){
+            alert("Compruebe la conexión a internet");
+            return;
+        } 
+        document.getElementById("loading").style.display = "inline";
+        document.getElementById("ContenedorLoading").style.display = "none";
+        CrearUnidad(Nombre);
+    }
+
+    function CrearUnidad(Nombre){
+        var UnidadRef = ref(db, "Unidades_Educativas/"+Sede);                        
+        // Añadir un nuevo elemento utilizando push
+        const nuevoPushRef = push(UnidadRef, Nombre);
+
+        // Obtener el nombre del push generado
+        const nuevoPushKey = nuevoPushRef.key;
+
+        nuevoPushRef.then(() => {
+            alert("La unidad educativa "+Nombre+" se a creado correctamente");
+            document.getElementById("NombreUnidadEducativa").value = "";
+        })
+        .catch((error) => {
+            remove(ref(db,"Unidades_Educativas/"+Sede+"/"+nuevoPushKey)); 
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("ContenedorLoading").style.display = "inline";                 
+            alert("Intente de nuevo");
+        });
+    }
+
+
+
+    document.getElementById("ButtonCurso").onclick = function(e){
+        var Nombre = document.getElementById("NombreCurso").value;
+        Nombre = Nombre.toUpperCase();
+        if(Nombre == ""){
+            alert("Ingrese el nombre del nuevo curso");
+            return;
+        }
+
+        if(Nombre.length != 4){
+            alert("El nombre debe poseer 2 letras y 2 números");
+            return;
+        }
+
+        if(Nombre[0] != "S" && Nombre[0] != "D" && Nombre[0] != "E"){
+            alert("El nombre debe iniciar con E, S o D");
+            return;
+        }
+        if(Nombre[1] != "M" && Nombre[1] != "T"){
+            alert("la segunda letra debe ser una M o una T");
+            return;
+        }
+
+        if(ListaCursos.includes(Nombre)){
+            alert("El curso ya se encuentra registrado");
+            return;  
+        }
+        if(!window.navigator.onLine){
+            alert("Compruebe la conexión a internet");
+            return;
+        } 
+        document.getElementById("loading").style.display = "inline";
+        document.getElementById("ContenedorLoading").style.display = "none";
+        CrearCurso(Nombre);
+    }
+
+    function CrearCurso(Nombre){
+        var UnidadRef = ref(db, Periodo+"/"+Sede+"/Lista_Cursos");                        
+        // Añadir un nuevo elemento utilizando push
+        const nuevoPushRef = push(UnidadRef, Nombre);
+
+        // Obtener el nombre del push generado
+        const nuevoPushKey = nuevoPushRef.key;
+
+        nuevoPushRef.then(() => {
+            alert("El curso "+Nombre+" se a creado correctamente");
+            document.getElementById("NombreCurso").value = "";
+        })
+        .catch((error) => {
+            remove(ref(db,Periodo+"/"+Sede+"/Lista_Cursos/"+nuevoPushKey)); 
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("ContenedorLoading").style.display = "inline";                 
+            alert("Intente de nuevo");
+        });
+    }
+
+
+    // MOSTRAR LISTAS
+    document.getElementById("MostrarUnidadEducativa").onclick = function(e){
+        document.getElementById("MostrarUnidadEducativa").style.display = "none";
+        document.getElementById("MostrarCursos").style.display = "inline";
+        document.getElementById("ListaUnidadesCreados").style.display = "inline";
+        document.getElementById("ListaCursosCreados").style.display = "none";
+        document.getElementById("NombreLista").innerHTML = "Lista de Unidades Educativas";
+    }
+    document.getElementById("MostrarCursos").onclick = function(e){
+        document.getElementById("MostrarUnidadEducativa").style.display = "inline";
+        document.getElementById("MostrarCursos").style.display = "none";
+        document.getElementById("ListaCursosCreados").style.display = "inline";
+        document.getElementById("ListaUnidadesCreados").style.display = "none";
+        document.getElementById("NombreLista").innerHTML = "Lista de Cursos creados";
+    }
+
+
+
+     // LEER LISTA UNIDADES
+     onValue(child(dbRef, "Unidades_Educativas/"+Sede), (snapshot) => {     
+        if (snapshot.exists()) {
+            var div = document.getElementById("ListaUnidadesCreados");
+            // Eliminar todos los elementos hijos del div
+            while (div.firstChild) {
+                div.removeChild(div.firstChild);
+            }            
+            ListaUnidades = [];
+            LeerUnidadesCreados();
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("ContenedorLoading").style.display = "inline";
+        }
+        else{
+            var div = document.getElementById("ListaUnidadesCreados");
+            // Eliminar todos los elementos hijos del div
+            while (div.firstChild) {
+                div.removeChild(div.firstChild);
+            }            
+            ListaUnidades = [];
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("ContenedorLoading").style.display = "inline";
+        }
+    });
+    
+    function LeerUnidadesCreados(){
+        get(child(dbRef, "Unidades_Educativas/"+Sede)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const keys = Object.keys(snapshot.val()).reverse();
+                keys.forEach((key) => {
+                    const hijo = snapshot.val()[key];   
+                    ListaUnidades.push(hijo.toLowerCase().replace(/\s/g, '')); 
+                    CrearUnidades(key,hijo);
+                });    
+            }                               
+        }).catch((error) => {      
+            location.reload();
+        });        
+    }
+
+    function CrearUnidades(Id,Nombre){
+        var LeerDiv = document.getElementById("ListaUnidadesCreados");
+        var newBloque = document.createElement("div"); 
+        newBloque.className = "PerfilesCreados";
+        newBloque.onclick = (function() { EliminarUnidad(Id); });    
+        var newH2 = document.createElement("h2");
+        newH2.innerText = Nombre;           
+        newBloque.appendChild(newH2); 
+        LeerDiv.appendChild(newBloque);     
+    }
+
+    function EliminarUnidad(Id){
+        if (confirm("¿Estás seguro de eliminar la unidad educativa?")) {
+            remove(ref(db,"Unidades_Educativas/"+Sede+"/"+Id));                  
+        } 
+    }
+
+
+
+
+     // LEER LISTA CURSOS
+     onValue(child(dbRef, Periodo+"/"+Sede+"/Lista_Cursos"), (snapshot) => {     
+        if (snapshot.exists()) {
+            var div = document.getElementById("ListaCursosCreados");
+            // Eliminar todos los elementos hijos del div
+            while (div.firstChild) {
+                div.removeChild(div.firstChild);
+            }            
+            ListaCursos = [];
+            LeerCursosCreados();
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("ContenedorLoading").style.display = "inline";
+        }
+        else{
+            var div = document.getElementById("ListaCursosCreados");
+            // Eliminar todos los elementos hijos del div
+            while (div.firstChild) {
+                div.removeChild(div.firstChild);
+            }            
+            ListaCursos = [];
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("ContenedorLoading").style.display = "inline";
+        }
+    });
+    
+    function LeerCursosCreados(){
+        get(child(dbRef, Periodo+"/"+Sede+"/Lista_Cursos")).then((snapshot) => {
+            if (snapshot.exists()) {
+                const keys = Object.keys(snapshot.val()).reverse();
+                keys.forEach((key) => {
+                    const hijo = snapshot.val()[key];   
+                    ListaCursos.push(hijo); 
+                    CrearCursos(key,hijo);
+                });    
+            }                               
+        }).catch((error) => {      
+            location.reload();
+        });        
+    }
+
+    function CrearCursos(Id,Nombre){
+        var LeerDiv = document.getElementById("ListaCursosCreados");
+        var newBloque = document.createElement("div"); 
+        newBloque.className = "PerfilesCreados";
+        newBloque.onclick = (function() { EliminarCurso(Id); });    
+        var newH2 = document.createElement("h2");
+        newH2.innerText = Nombre;           
+        newBloque.appendChild(newH2); 
+        LeerDiv.appendChild(newBloque);     
+    }
+
+    function EliminarCurso(Id){
+        if (confirm("¿Estás seguro de eliminar la unidad educativa?")) {
+            remove(ref(db,Periodo+"/"+Sede+"/Lista_Cursos/"+Id));                  
+        } 
+    }
+
+</script>
