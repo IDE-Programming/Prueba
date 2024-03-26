@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="RegistroAlumno.css">
+    <meta name="author" content="Astro Code">
+    <link rel="shortcut icon" href="Imagenes/iconoWebC.png">  
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" ></script>
+
+    <title>Registro Alumno</title>
+</head>
+<body>
+    <div id="loading">
+        <img src="Imagenes/loading.gif">
+    </div>
+
+    <div id="ContenedorLoading">
+        <div id="ContenedorGeneral">  
+            <div id="Contenedor2">
+                <button id="Regresar" onclick="location.href = 'MenuEstudiantes.html'"> &#60;</button>
+
+                <h1 style=" color: white;">Crear Nuevo Alumno</h1>
+
+                <h3 id="P1">Paso 1<br>Información Personal</h3>
+                <h3 id="P2">Paso 2<br>Información Preuniversitario</h3>
+                <h3 id="P3">Paso 3<br>Vista Preliminar del Contrato</h3>
+
+                
+
+            </div>      
+            <div id="Contenedor1">
+
+                <div id="InformacionPersonal" style="display: none;">
+                    <h1>Información del Estudiante</h1>
+
+                    <h2>Nombre Completo</h2>
+                    <input type="text" class="inputcompleto" id="NombreE" autocomplete="off" oninput="this.value = this.value.replace(/[^A-Z a-zñÑÁÉÍÓÚáéíóú]/g, '');">                             
+                    
+                    <div class="Separacion">
+                        <div>
+                            <h2>Cédula</h2>
+                            <input type="text" id="CedulaE"   autocomplete="off" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');">             
+                        </div>
+                        <div>
+                            <h2>Teléfono</h2>
+                            <input type="text" id="TelefonoE"  autocomplete="off" maxlength="10" oninput="this.value = this.value.replace(/[^0-9-]/g, '');">                             
+                        </div>
+                    </div>
+    
+    
+    
+                    <h1>Información del Representante</h1>
+    
+                    <h2>Nombre Completo</h2>
+                    <input type="text" class="inputcompleto" id="NombreR" autocomplete="off" oninput="this.value = this.value.replace(/[^A-Z a-zñÑÁÉÍÓÚáéíóú]/g, '');">                             
+                    
+                    <div class="Separacion">
+                        <div>
+                            <h2>Cédula</h2>
+                            <input type="text" id="CedulaR"  autocomplete="off" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');">             
+                        </div>
+                        <div>
+                            <h2>Teléfono</h2>
+                            <input type="text" id="TelefonoR"  autocomplete="off" maxlength="10" oninput="this.value = this.value.replace(/[^0-9-]/g, '');">                             
+                        </div>
+                    </div>
+    
+                    <h2>Correo Electrónico</h2>
+                    <input type="text" id="CorreoElectronico" class="inputcompleto" autocomplete="off">                             
+                    
+    
+                    <h1>Información Extra</h1>
+    
+                    <h2>Dirección</h2>
+                    <input type="text" id="Ubicacion" class="inputcompleto" autocomplete="off">                             
+                    
+                    <h2>Link Google Maps (Opcional)</h2>
+                    <input type="text" id="LinkUbicacion" class="inputcompleto" autocomplete="off">                             
+                    
+                    <h2>Unidad Educativa</h2>
+                    <select id="UnidadEducativa" class="inputcompleto">            
+                    </select>                 
+                    <button id="ActualizarUnidadEducativa" class="Actualizar">Actualizar Unidades Educativas</button>
+    
+             
+                    <button id="Siguiente">Siguiente</button>
+                </div>
+
+                <div id="InformacionPreuniversitario">
+                    <h1>Información del Preuniversitario</h1>                  
+                    <div class="Separacion">
+                        <div>
+                            <h2>Vendedor/a</h2>
+                            <select  id="Vendedores">            
+                            </select> 
+                            <button class="Actualizar" id="ActualizarVendedores" style="width: 100%;">Actualizar Vendedores y Cursos</button>
+
+                        </div>
+                        <div>
+                            <h2>Curso</h2>
+                            <select  id="Cursos">            
+                            </select> 
+                            <button id="ActualizarCursos" class="Actualizar" style="width: 100%;">Actualizar Vendedores y Cursos</button>                        
+                        </div>
+                    </div>
+    
+                    <h2>Fecha de Inicio del Curso</h2>
+                    <input type="date" id="FechaInicioCurso" class="inputcompleto" autocomplete="off">                             
+              
+                    <h2>Valor del Curso</h2>
+                    <input type="text" id="ValorCurso" class="inputcompleto" placeholder="Ejm: 320" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/^(\d+\.\d*)\..*/g, '$1').replace(/(\.\d\d)\d+/g, '$1');">                             
+                    
+    
+                    <h1>Modalidades de Pago</h1>
+
+                    <div class="Separacion">
+                        <div class="Modalidad" id="Directo">
+                            <img src="Imagenes/img19.png">
+                            <h2>Directo</h2>
+                        </div>
+                        <div class="Modalidad" id="Diferido">
+                            <img src="Imagenes/img14.png">
+                            <h2>Diferido</h2>                
+                        </div>                      
+                    </div>
+
+                    <div id="DivCuotas">
+                        <h2>Número de Cuotas Programadas</h2>
+                        <select class="inputcompleto" id="NumeroCuotas">   
+                            <option value="Seleccione">Seleccione</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select>
+                    </div>
+                    
+                    <div id="DivMonto">
+                        <h2 id="TituloPago">Pago Completo del Curso</h2>
+                        <input type="text" id="PagoMonto" class="inputcompleto" placeholder="Ejm: 320" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/^(\d+\.\d*)\..*/g, '$1').replace(/(\.\d\d)\d+/g, '$1');">                             
+                        
+                        <h2 id="TituloMetodo">Método de Pago</h2>
+                        <select class="inputcompleto" id="MetodoPago">
+                            <option value="Seleccione">Seleccione</option>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Transferencia">Transferencia</option>
+                            <option value="Tarjeta">Tarjeta</option>
+                            <option value="Cheque">Cheque</option> 
+                        </select>   
+                    </div>
+
+                    
+
+
+                   
+                    <div id="DivProximoPago">
+                        <h2>Próxima Fecha de Pago</h2>
+                        <select class="inputcompleto" id="ProximoPago">   
+                            <option value="Seleccione">Seleccione</option>
+                            <option value="Enero">Enero</option>
+                            <option value="Febrero">Febrero</option>
+                            <option value="Marzo">Marzo</option>
+                            <option value="Abril">Abril</option>
+                            <option value="Mayo">Mayo</option>
+                            <option value="Junio">Junio</option>
+                            <option value="Julio">Julio</option>
+                            <option value="Agosto">Agosto</option>
+                            <option value="Septiembre">Septiembre</option>
+                            <option value="Octubre">Octubre</option>
+                            <option value="Noviembre">Noviembre</option>
+                            <option value="Diciembre">Diciembre</option>
+                        </select>  
+                    </div>
+                                                        
+                                             
+                    <button id="Siguiente1" class="Siguiente">Siguiente</button>
+                    <button class="Regresar">Regresar</button>
+
+             
+                </div>
+
+
+                <div id="VistaPreliminar">
+
+                    <h1 style="text-align: center;">Vista Preliminar del Contrato</h1> 
+                    <button id="ButtonDescargar_Guardar">Descargar y Crear Alumno</button>                 
+                    <div id="Contrato">
+
+                        <h2>PREUNIVERSITARIO GRAHAM BELL<br>CONTRATO DE SERVICIOS EDUCATIVOS<br>CURSO DE INGRESO A LA UNIVERSIDAD PÚBLICA Y PRIVADA 2023 – 2024</h2>
+                        <p>Contrato de Servicios Educativos entre el Preuniversitario Graham Bell y el representante del estudiante, con los siguientes datos importantes:</p>
+
+                        <table border="1">                            
+                            <tr>
+                              <td class="AnchoTabla">Nombre y Apellido del Estudiante:</td>
+                              <td>Mateo</td>
+                            </tr>
+                            <tr>
+                              <td class="AnchoTabla">Número de cédula del Estudiante:</td>
+                              <td>Mateo</td>
+                            </tr>
+                            <tr>
+                                <td class="AnchoTabla">Número de teléfono del Estudiante:</td>
+                                <td>Mateo</td>
+                            </tr>
+                            <tr>
+                                <td class="AnchoTabla">Colegio en el que estudia:</td>
+                                <td>Mateo</td>
+                            </tr>
+                            <tr>
+                                <td class="AnchoTabla">Nombre y Apellido del Representante:</td>
+                                <td>Mateo</td>
+                            </tr>
+                            <tr>
+                                <td class="AnchoTabla">Número de cédula del Representante:</td>
+                                <td>Mateo</td>
+                            </tr>
+                            <tr>
+                                <td class="AnchoTabla">Número de teléfono del Representante:</td>
+                                <td>Mateo</td>
+                            </tr>
+                            <tr>
+                                <td class="AnchoTabla">Correo electrónico del Representante:</td>
+                                <td>Mateo</td>
+                            </tr>
+                            <tr>
+                                <td class="AnchoTabla">Dirección en el que reside el Estudiante:</td>
+                                <td>Mateo</td>
+                            </tr>
+                        </table> 
+                        <br>                       
+                        <h3>1.Servicios Educativos:</h3>
+                        <p>El Instituto Educativo proporcionará servicios educativos al estudiante, incluyendo, pero no limitándose a, la entrega de instrucción, la evaluación del rendimiento académico del estudiante y la emisión de calificaciones, descritos a continuación:</p>
+                        <table border="1">                            
+                            <tr>
+                            <td class="AnchoTabla">Inicio del curso:</td>
+                            <td>Mateo</td>
+                            </tr>
+                            <tr>
+                            <td class="AnchoTabla">Fin del Curso:</td>
+                            <td>15 de septiembre del 2024</td>
+                            </tr>                           
+                        </table>
+
+                        <h3>Horario de clases:</h3>
+                        <p>El curso está distribuido en dos etapas para la capacitación de exámenes psicotécnicos y exámenes de conocimiento de la siguiente manera:</p>
+
+                        <h3>Etapa 1:</h3>
+                        <p>Exámenes Psicotécnicos y Fundamentos Matemáticas, con 6,5 horas de clases presenciales en el horario de sábados de 08:00am a 13:00pm y una clase entre semana, recibirán las siguientes asignaturas:</p>                          
+                        <h4 class="ListaContrato">* Aptitud Numérica y fundamentos de matemáticas
+                            <br>* Aptitud Verbal
+                            <br>* Atención, lógica y abstracto
+                            <br>* Orientación vocacional</h4>                    
+                        <p>La primera etapa terminará la segunda semana de febrero del 2024</p>                          
+                        <br><br><br><br><br><br><br><br>
+                        <h3>Etapa 2:</h3>
+                        <p>Preparación para exámenes de conocimiento, con 8 horas de clase presenciales de clase en el horario de sábados de 08:00am a 13:00pm y dos clases entre semana, recibirán las siguientes asignaturas:</p>
+                        <h4 class="ListaContrato">* Aptitud Numérica y matemáticas
+                        <br>* Aptitud Verbal
+                        <br>* Atención, lógica y abstracto
+                        <br>* Dos asignaturas de especialidad</h4>
+                          
+                        <h3>Orientación vocacional:</h3>
+                        <p>La orientación vocacional ofrecida consta de 8 actividades grupales y sesiones personales dirigidas por una psicóloga clínica graduada en la Pontificia Universidad Católica del Ecuador.</p>
+                        <br>
+                        <p>Las actividades grupales son diseñadas para ayudar a los participantes a explorar y descubrir sus intereses, habilidades, valores y metas profesionales. Estas actividades pueden incluir juegos de rol, discusiones grupales, ejercicios de reflexión, entre otros.</p>
+                        <br>
+                        <p>Por otro lado, las sesiones personales ofrecen la oportunidad de abordar preocupaciones o preguntas específicas sobre la elección de carrera, además de brindar un espacio privado y seguro para expresar inquietudes personales y explorar la relación entre la elección de carrera y el bienestar emocional.</p>
+                        <br>
+                        <p>La psicóloga clínica graduada en la Pontificia Universidad Católica del Ecuador dirige estas actividades y sesiones con el objetivo de ayudar a los participantes a tomar decisiones informadas y conscientes sobre su futuro profesional, así como también apoyarlos en el desarrollo de habilidades y estrategias para alcanzar sus objetivos.</p>
+                        <h3>Cuerpo docente del Preuniversitario Graham Bell:</h3>
+                        <p>Los profesores que brindarán las clases están altamente capacitados en su área de especialidad. Han completado los requisitos académicos y de experiencia profesional necesarios para enseñar de manera efectiva.</p>
+                        <h3>Clases en feriados:</h3>
+                        <p>Por motivos de calendario académico y para asegurar que los participantes del curso reciban el contenido completo del programa, se informa que las clases se llevarán a cabo en la mayoría de los feriados, ya que el tiempo disponible es limitado y no sería suficiente para cubrir todo el material programado, los feriados que los estudiantes tendrán libres son:</p>
+                        <h4 class="ListaContrato">* Día de difuntos (03, 04 y 05 de noviembre del 2023)
+                            <br>* Navidad y Fin de año, las actividades en diciembre terminarán el 16 de diciembre del 2023 y retomara el 06 de enero del 2024
+                            <br>* Carnaval (12 y 13 de febrero del 2024)
+                            <br>* Día del trabajador (01 de mayo del 2024)
+                            <br>* Primer grito de Independencia (10 de agosto)</h4>                          
+                        <p>Agradecemos su comprensión y compromiso con el programa, y nos aseguraremos de comunicar con anticipación cualquier cambio en el horario de clases en caso de ser necesario.</p>
+                        <br>
+                        <h3>2. Obligaciones del Estudiante:</h3>
+                        <p>El estudiante se compromete a cumplir con todas las políticas y procedimientos del Instituto Educativo, incluyendo, pero no limitándose a, la asistencia a las clases, la presentación de trabajos y exámenes en tiempo y forma y el respeto a las normas de conducta y ética del Instituto Educativo.</p>
+                        <br><br><br><br><br><br>
+                        <h3>Inasistencia del estudiante:</h3>
+                        <p>La inasistencia a las clases presenciales no podrá ser recuperada de manera presencial debido a la naturaleza intensiva del programa, sin embargo, para garantizar que los participantes tengan acceso a todo el contenido del curso, se proporcionarán videos grabados de las clases y material en formato PDF, que estarán disponibles en una plataforma en línea.</p>
+                        <br>
+                        <p>Los participantes podrán acceder a estos recursos en cualquier momento y desde cualquier lugar, lo que les permitirá igualar las clases perdidas y mantenerse al día con el contenido del curso.</p>
+                        <br>
+                        <p>Se recomienda encarecidamente que los participantes utilicen estos recursos para ponerse al día en caso de ausencia, ya que la asistencia regular es un factor importante para el éxito en el programa.</p>
+                        <h3>Atrasos por parte del estudiante:</h3>
+                        <p>Se informa a los participantes del curso que se espera que lleguen puntualmente a la hora de entrada de las clases.</p>
+                        <br>
+                        <p>En caso de llegar 15 minutos tarde, el estudiante deberá esperar hasta la segunda hora para ingresar al aula. Esto se hace para evitar interrupciones en la dinámica de la clase y para garantizar que los participantes puedan aprovechar al máximo el tiempo de aprendizaje.</p>
+                        <br>
+                        <p>Se recomienda a los participantes llegar con suficiente anticipación a la hora de entrada de las clases para evitar retrasos y garantizar una experiencia de aprendizaje productiva.</p>
+                        <h3>Daños en la infraestructura y faltas de respeto:</h3>
+                        <p>Se informa a los participantes del curso que, en caso de dañar alguna infraestructura del instituto, el representante legal del estudiante deberá reponer el objeto dañado o cubrir los gastos necesarios para su reparación</p>
+                        <br>
+                        <p>Además, se hace hincapié en que se espera que todos los participantes del curso se comporten de manera respetuosa y adecuada hacia los docentes y el personal administrativo. Se tomarán medidas apropiadas si se producen faltas de respeto hacia el personal del instituto.</p>
+                        <br>
+                        <p>En el caso de que se produzcan faltas de respeto hacia los docentes o personal administrativo del instituto, se reserva el derecho de finalizar el contrato del participante de manera inmediata.
+                            Esto se hace para garantizar el ambiente de aprendizaje adecuado y respetuoso para todos los participantes del curso.</p>
+                        <br>
+                        <p>Se solicita a los participantes que tomen nota de estas condiciones y las respeten durante todo el programa para garantizar una experiencia de aprendizaje productiva y respetuosa.</p>
+                        <br>
+                        <h3>3. Duración del Contrato:</h3>
+                        <p>El presente contrato estará en vigor desde la fecha de la matrícula del estudiante hasta la finalización del curso escolar o la graduación del estudiante, lo que ocurra primero.</p>
+                        <br>
+                        <h3>4. Pago de Matrícula y Honorarios:</h3>
+                        <p>El representante se compromete a pagar la matrícula y los honorarios correspondientes por los servicios educativos proporcionados por el Instituto Educativo, los pagos de los aranceles del curso se cancelarán de la siguiente manera:</p>
+                        <h3>4.1. Pago en efectivo</h3>
+                        <p>El curso en pago efectivo o transferencia es de $380</p>
+                        <h3>4.2. Tarjeta de crédito:</h3>
+                        <p>El curso se puede cancelar con tarjeta de crédito por un valor total de $410, la misma que se debe cancelar en las oficinas del Preuniversitario Graham Bell.</p>
+                        <br><br><br><br><br>
+                        <h3>4.3. Plan diferido a cuatro meses:</h3>
+                        <p>El valor del curso diferido en dos cuotas es de $420 y se cancelara de la siguiente manera:</p>
+
+                        <table border="1">                            
+                            <tr>
+                                <td>Primera cuota: $150 (matrícula)</td>
+                                <td>Segunda cuota: $90</td>
+                                <td>Tercera cuota: $90</td>
+                                <td>Cuarta cuota: $150</td>
+
+                            </tr>
+                            <tr>
+                                <td>Quinta cuota: $90</td>
+                                <td>Sexta cuota: $150</td>
+                                <td>Séptima cuota: $90</td>
+                                <td>Octava cuota: $90</td>
+                            </tr>
+                            <tr>
+                                <td>Novena cuota: $90</td>
+                                <td>Décima cuota: $90</td>
+                                <td>Undécima cuota: $90</td>
+                                <td>Duodécima cuota: $90</td>
+                            </tr>                                         
+                        </table>
+
+                          
+                         
+                        <table border="1">                            
+                            <tr>
+                                <td><b>El representante acepta a la siguiente modalidad:</b></td>
+                            </tr>                                                         
+                        </table>
+
+                        <h3>5. Cancelación y Reembolso:</h3>
+                        <p>En caso de que desee cancelar su matrícula en el curso, debe notificar a la institución a través de los medios disponibles <b>(Msc. Patricio Espinosa 0983033404)</b> indicando su deseo de cancelar.</p>
+                        <br>
+                        <p>Si la cancelación se realiza dentro del plazo máximo de un mes desde la fecha de inicio del curso, se le reembolsará el valor total del curso, menos una <b>multa administrativa del 10%</b> del valor del curso.</p>
+                        <br>
+                        <p>En caso de que la cancelación se realice después de un mes y dentro del plazo máximo de dos meses desde la fecha de inicio del curso, se le <b>reembolsará el 50% del valor total del curso</b>, menos una <b>multa administrativa del 10%</b> del valor del curso.</p>
+                        <br>
+                        <p>Si la cancelación se realiza <b>después de dos meses desde la fecha de inicio del curso, no se realizará ningún reembolso</b>, ya que no se podrá ocupar su lugar en el curso.</p>
+                        <br>
+                        <h3>6. Propiedad Intelectual:</h3>
+                        <p>El estudiante reconoce que el material de enseñanza y los derechos de propiedad intelectual asociados con ellos pertenecen al Instituto Educativo. El estudiante se compromete a no copiar, reproducir, distribuir, divulgar, transmitir o utilizar los materiales de enseñanza para ningún propósito que no sea el de cumplir con los objetivos educativos del curso.</p>
+                        <br>
+                        <h3>7. Privacidad de la Información:</h3>
+                        <p>El Instituto Educativo se compromete a proteger la privacidad de la información del estudiante. El Instituto Educativo no divulgará ninguna información personal del estudiante a terceros sin el consentimiento del estudiante, excepto en los casos en que sea necesario para cumplir con las obligaciones legales y reglamentarias.</p>
+                        <br>
+                        <h3>8. Ley Aplicable y Jurisdicción:</h3>
+                        <p>Este contrato se regirá e interpretará de acuerdo con las leyes del Ecuador. Cualquier disputa relacionada con este contrato se resolverá mediante un arbitraje vinculante en [Quito, Ecuador].</p>
+                        
+                        <h3>Firmado por:</h3>
+
+                        <br>
+                        <br>
+                        <br>          
+                        <br>          
+                        <br>   
+                        <table>                            
+                            <tr>
+                            <td style="border-bottom: 0px;"><p style="border-top: 1px solid #000000;">MsC. Patricio Espinosa Ing.<br>Director general del Preuniversitario Graham Bell<br>RUC: 172631272900</p></td>
+                            <td style="border-bottom: 0px;"><p style="border-top: 1px solid #000000;">Nombre Representante:<br>C.I:</p></td>
+
+                            </tr>                                                   
+                        </table>                                                                                                                        
+                    </div>
+
+
+                </div>
+                
+    
+            
+            
+            </div>  
+          
+        </div>
+    </div>
+
+  
+
+    <script src="Modulo.js"></script>
+
+</body>
+</html>
+
+
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics.js";
+    
+    const firebaseConfig = {
+        apiKey: window.apiKey,
+        authDomain: window.authDomain,
+        databaseURL: window.databaseURL,
+        projectId: window.projectId,
+        storageBucket: window.storageBucket,
+        messagingSenderId: window.messagingSenderId,
+        appId: window.appId,
+        measurementId: window.measurementId
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    import {getDatabase,ref,set,child,update,remove,get,push,onValue}
+    from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+    const db =getDatabase();
+    const dbRef = ref(getDatabase());
+
+
+    // VARIABLES GENERALES
+    var Cedula = localStorage.getItem('Cedula');
+    var Rol = localStorage.getItem('Rol');
+    var Sede = localStorage.getItem('Sede');
+    var Periodo = localStorage.getItem('Periodo');
+    var FechaInicio = localStorage.getItem('FechaInicio');
+    
+    // Obtener la fecha actual
+    const fechaActual = new Date();
+    const dia = fechaActual.getDate();
+    const mes = fechaActual.getMonth() + 1;
+    const anio = fechaActual.getFullYear();
+    var Fecha = `${dia}/${mes}/${anio}`;
+
+    if(Cedula == null){
+        alert("El tiempo expiro, inicie sesión nuevamente");
+        location.href="index.html";
+    }
+
+    if(Fecha != FechaInicio){
+        alert("El tiempo expiro, inicie sesión nuevamente");
+        location.href="index.html";
+    }
+
+    let inactividadTimer;
+    function iniciarInactividad() {
+        if (inactividadTimer) {
+            clearTimeout(inactividadTimer);
+        }
+        inactividadTimer = setTimeout(function() {
+            BaseDeDatos();
+            
+        }, 5 * 60 * 1000); // 5 minutos en milisegundos
+    }
+    function reiniciarInactividad() {
+        iniciarInactividad();
+    }
+    document.addEventListener("mousemove", reiniciarInactividad);
+    document.addEventListener("keypress", reiniciarInactividad);
+    document.addEventListener("touchstart", reiniciarInactividad); // Para dispositivos táctiles
+    iniciarInactividad();
+    function BaseDeDatos(){            
+            get(dbRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                var Datos = snapshot.val();   
+                localStorage.setItem('CopiasDeSeguridad',JSON.stringify(Datos));
+                location.href="CopiaDeSeguridad.html";
+            }
+        
+        }).catch((error) => {
+            BaseDeDatos();
+        });
+    }
+    
+
+
+
+    // PROGRAMACION DEL BLOQUE
+
+
+    //LEER UNIDADES EDUCATIVAS
+    LeerUnidadesEducativas();
+
+    document.getElementById("ActualizarUnidadEducativa").onclick = function(e){
+        LeerUnidadesEducativas();
+    }
+
+    function LeerUnidadesEducativas(){
+        BorrarDatos();
+        var Lista = [];
+        Lista.push("Seleccione");
+        get(child(dbRef, "Unidades_Educativas/"+Sede)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const keys = Object.keys(snapshot.val()).reverse();
+                keys.forEach((key) => {
+                    const hijo = snapshot.val()[key];   
+                    Lista.push(hijo);             
+                });    
+            }      
+            else{
+                alert("No se a registrado ninguna unidad educativa creada");
+                return;
+            }                         
+        }) .then(()=>{
+            for(var i = 0; i < Lista.length;i++){
+                var combo = document.getElementById("UnidadEducativa");
+                var option = document.createElement('option');
+                option.value = Lista[i];
+                option.text = Lista[i];
+                combo.options.add(option, i);
+            }  
+        }).catch((error) => { 
+            alert("Actualice las unidades educativas"); 
+        });        
+    }
+
+    function BorrarDatos(){
+        const UnidadEducativa = document.getElementById("UnidadEducativa");
+        while (UnidadEducativa.options.length > 0) {
+            UnidadEducativa.remove(0);
+        }        
+    }
+     
+
+    //LEER VENDEDORES
+    LeerVendedores();
+
+    document.getElementById("ActualizarVendedores").onclick = function(e){
+        LeerVendedores();
+    }
+
+    function LeerVendedores(){
+        BorrarDatosVendedores();
+        var Lista = [];
+        var ListaCedula = [];
+
+        Lista.push("Seleccione");
+        ListaCedula.push("Seleccione");
+
+        get(child(dbRef, Periodo+"/"+Sede+"/Vendedores/")).then((snapshot) => {
+            if (snapshot.exists()) {
+                const keys = Object.keys(snapshot.val()).reverse();
+                keys.forEach((key) => {
+                    const hijo = snapshot.val()[key]; 
+                    var NombreV = hijo.Nombre;  
+                    Lista.push(NombreV); 
+                    ListaCedula.push(hijo);                         
+                });    
+            } 
+            else{
+                alert("No se a registrado ningún vendedor/a");
+                return;
+            }                                 
+        }) .then(()=>{
+            for(var i = 0; i < Lista.length;i++){
+                var combo = document.getElementById("Vendedores");
+                var option = document.createElement('option');
+                option.value = ListaCedula[i];
+                option.text = Lista[i];
+                combo.options.add(option, i);
+            }  
+        }).catch((error) => { 
+            alert("Actualice los vendedores"); 
+        });        
+    }
+
+    function BorrarDatosVendedores(){
+        const Vendedores = document.getElementById("Vendedores");
+        while (Vendedores.options.length > 0) {
+            Vendedores.remove(0);
+        }        
+    }
+    
+
+    //LEER CURSOS
+    LeerCursos();
+
+    document.getElementById("ActualizarCursos").onclick = function(e){
+        LeerCursos();
+    }
+
+    function LeerCursos(){
+        BorrarDatosCursos();
+        var Lista = [];
+        Lista.push("Seleccione");
+
+        get(child(dbRef, Periodo+"/"+Sede+"/Lista_Cursos/")).then((snapshot) => {
+            if (snapshot.exists()) {
+                const keys = Object.keys(snapshot.val()).reverse();
+                keys.forEach((key) => {
+                    const hijo = snapshot.val()[key]; 
+                    Lista.push(hijo); 
+                });    
+            }  
+            else{
+                alert("No se a registrado ningún curso");
+                return;
+            }                                 
+        }) .then(()=>{
+            for(var i = 0; i < Lista.length;i++){
+                var combo = document.getElementById("Cursos");
+                var option = document.createElement('option');
+                option.value = Lista[i];
+                option.text = Lista[i];
+                combo.options.add(option, i);
+            }  
+        }).catch((error) => { 
+            alert("Actualice los cursos"); 
+        });        
+    }
+
+    function BorrarDatosCursos(){
+        const Cursos = document.getElementById("Cursos");
+        while (Cursos.options.length > 0) {
+            Cursos.remove(0);
+        }        
+    }
+
+
+ 
+    // CAMBIAR A SEGUNDA PESTAÑA
+    document.getElementById("Siguiente").onclick = function(e){
+        var NombreE = document.getElementById("NombreE").value;
+        var CedulaE = document.getElementById("CedulaE").value;
+        var TelefonoE = document.getElementById("TelefonoE").value;
+        var NombreR = document.getElementById("NombreR").value;
+        var CedulaR = document.getElementById("CedulaR").value;
+        var TelefonoR = document.getElementById("TelefonoR").value;
+        var CorreoElectronico = document.getElementById("CorreoElectronico").value;
+        var Ubicacion = document.getElementById("Ubicacion").value;
+        var LinkUbicacion = document.getElementById("LinkUbicacion").value;
+        var UnidadEducativa = document.getElementById("UnidadEducativa").value;      
+
+
+        if(NombreE == ""){
+            alert("Ingrese el nombre del Estudiante");
+            return;
+        }
+        if(CedulaE == ""){
+            alert("Ingrese el número de cédula del Estudiante");
+            return;
+        }
+        if(CedulaE.length != 10){
+            alert("La cédula del Estudiante no posee los 10 dígitos");
+            return;
+        }
+        if(TelefonoE == ""){
+            alert("Ingrese el número de teléfono del Estudiante");
+            return;
+        }
+        if(TelefonoE.length != 10){
+            alert("El número de teléfono del Estudiante no posee los 10 dígitos");
+            return;
+        }
+
+
+        if(NombreR == ""){
+            alert("Ingrese el nombre del Representante");
+            return;
+        }
+        if(CedulaR == ""){
+            alert("Ingrese el número de cédula del Representante");
+            return;
+        }
+        if(CedulaR.length != 10){
+            alert("La cédula del Representante no posee los 10 dígitos");
+            return;
+        }
+        if(TelefonoR == ""){
+            alert("Ingrese el número de teléfono del Representante");
+            return;
+        }
+        if(TelefonoR.length != 10){
+            alert("El número de teléfono del Representante no posee los 10 dígitos");
+            return;
+        }
+
+
+        if(CorreoElectronico == ""){
+            alert("Ingrese el correo electrónico del Representante");
+            return;
+        }
+
+        if(Ubicacion == ""){
+            alert("Ingrese la dirección del domicilio");
+            return;
+        }
+
+
+        if(UnidadEducativa == "" || UnidadEducativa == "Seleccione"){
+            alert("Seleccione una unidad educativa");
+            return;
+        }
+
+        document.getElementById("InformacionPreuniversitario").style.display = "inline";
+        document.getElementById("InformacionPersonal").style.display = "none";
+        document.getElementById("P1").style.color = "#1ccc16";
+
+        window.scrollTo(0, 0);
+    }
+
+    //SELECCIONAR MODALIDAD DE PAGO
+
+    var Modalidad_Pago = "";
+
+    document.getElementById("Directo").onclick = function(e){
+        var ValorCurso = document.getElementById("ValorCurso").value;
+
+        if(ValorCurso == ""){
+            alert("Ingrese el valor total del curso");
+            return;
+        }
+        if(ValorCurso[0] == "."){
+            alert("El valor total del curso no puede comenzar con un punto");
+            return;
+        }       
+        if(ValorCurso[ValorCurso.length-1] == "."){
+            alert("El valor total del curso no puede terminar con un punto");
+            return;
+        }  
+
+        Modalidad_Pago = "Directo";
+        document.getElementById("DivCuotas").style.display = "none";
+        document.getElementById("DivMonto").style.display = "inline";
+        document.getElementById("DivProximoPago").style.display = "none";
+        document.getElementById("Directo").style.backgroundColor = "#9be2c4";
+        document.getElementById("Diferido").style.backgroundColor = "#ffffff";
+        document.getElementById("TituloPago").innerHTML = "Pago Completo del Curso";
+        document.getElementById("TituloMetodo").innerHTML = "Método de Pago";
+        document.getElementById("PagoMonto").value = ValorCurso;
+        document.getElementById("PagoMonto").disabled = true;
+    }
+
+    document.getElementById("Diferido").onclick = function(e){
+        var ValorCurso = document.getElementById("ValorCurso").value;
+
+        if(ValorCurso == ""){
+            alert("Ingrese el valor total del curso");
+            return;
+        }
+        if(ValorCurso[0] == "."){
+            alert("El valor total del curso no puede comenzar con un punto");
+            return;
+        }       
+        if(ValorCurso[ValorCurso.length-1] == "."){
+            alert("El valor total del curso no puede terminar con un punto");
+            return;
+        }  
+
+        Modalidad_Pago = "Diferido";
+        document.getElementById("DivCuotas").style.display = "inline";
+        document.getElementById("DivMonto").style.display = "inline";
+        document.getElementById("DivProximoPago").style.display = "inline";
+        document.getElementById("Diferido").style.backgroundColor = "#9be2c4";
+        document.getElementById("Directo").style.backgroundColor = "#ffffff";
+        document.getElementById("TituloPago").innerHTML = "Pago de la Matrícula";
+        document.getElementById("TituloMetodo").innerHTML = "Método de Pago para la Matrícula";
+        document.getElementById("PagoMonto").disabled = false;
+        document.getElementById("PagoMonto").value = "";
+    }
+
+
+    //CAMBIO A TERCERA PESTAÑA
+    document.getElementById("Siguiente1").onclick = function(e){
+        var Vendedores = document.getElementById("Vendedores").value;
+        var Cursos = document.getElementById("Cursos").value;
+        var FechaInicioCurso = document.getElementById("FechaInicioCurso").value;
+        var ValorCurso = document.getElementById("ValorCurso").value;
+        var PagoMonto = document.getElementById("PagoMonto").value;
+        var MetodoPago = document.getElementById("MetodoPago").value;
+        var NumeroCuotas = document.getElementById("NumeroCuotas").value;
+        var ProximoPago = document.getElementById("ProximoPago").value;
+
+        if(Vendedores == "" || Vendedores == "Seleccione"){
+            alert("Seleccione un vendedor/a");
+            return;
+        }
+        if(Cursos == "" || Cursos == "Seleccione"){
+            alert("Seleccione un curso");
+            return;
+        }
+        if(FechaInicioCurso == ""){
+            alert("Ingrese la fecha de inicio del curso");
+            return;
+        }
+        if(ValorCurso == ""){
+            alert("Ingrese el valor total del curso");
+            return;
+        }
+        if(ValorCurso[0] == "."){
+            alert("El valor total del curso no puede comenzar con un punto");
+            return;
+        }       
+        if(ValorCurso[ValorCurso.length-1] == "."){
+            alert("El valor total del curso no puede terminar con un punto");
+            return;
+        }  
+        if(Modalidad_Pago == ""){
+            alert("Seleccione una modalidades de pago");
+            return;
+        }
+        if(PagoMonto == ""){
+            alert("Ingrese el monto a cancelar");
+            return;
+        }
+        if(PagoMonto[0] == "."){
+            alert("El monto a cancelar no puede comenzar con un punto");
+            return;
+        }       
+        if(PagoMonto[PagoMonto.length-1] == "."){
+            alert("El monto a cancelar no puede terminar con un punto");
+            return;
+        }  
+        if(MetodoPago == "" || MetodoPago == "Seleccione"){
+            alert("Seleccione un método de pago");
+            return;
+        }    
+
+        if(Modalidad_Pago == "Diferido"){
+            if(NumeroCuotas == "" || NumeroCuotas == "Seleccione"){
+                alert("Seleccione el número de cuotas");
+                return;
+            }
+            if(ProximoPago == "" || ProximoPago == "Seleccione"){
+                alert("Seleccione el mes del proximo pago");
+                return;
+            }
+        }
+        if(Modalidad_Pago == "Directo"){
+            if(PagoMonto != ValorCurso){
+                alert("El monto a cancelar debe ser el mismo que el valor del curso");
+                alert("Se a actualizado el monto a cancelar para que concuerde con la modalidad");
+                document.getElementById("PagoMonto").value = ValorCurso
+                return;
+            }
+        }
+
+        if(PagoMonto > ValorCurso){
+            alert("El monto a cancelar no puede ser superior al valor total del curso");
+            return;
+        }
+        
+        document.getElementById("VistaPreliminar").style.display = "inline";
+        document.getElementById("InformacionPreuniversitario").style.display = "none";
+        document.getElementById("P2").style.color = "#1ccc16";
+
+        window.scrollTo(0, 0);
+    }
+
+    //DESCARGAR CONTRATO Y GUARDAR
+    document.getElementById("ButtonDescargar_Guardar").onclick = function(e){
+        window.scrollTo(0, 0);
+        CrearContrato();
+    }
+
+
+
+
+
+    //CREAR CONTRATO
+    function CrearContrato(){
+        var element = document.getElementById('Contrato');
+            // Opciones para la generación del PDF
+        var options = {
+            filename: 'documento.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { format: 'a4', orientation: 'portrait' }, // Tamaño A4 y orientación vertical
+            pagebreak: { mode: ['css', 'legacy'] }
+        };
+
+        html2pdf()
+            .set(options)
+            .from(element)
+            .save();
+    }
+
+    
+</script>
